@@ -1,6 +1,9 @@
 package code.draw;
 
+import code.compute.Perceptron;
+import code.data.LinePoint;
 import code.data.LinearSeparableData;
+import code.data.DataPoint;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -45,13 +48,7 @@ public class DrawPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
-        //Get the LinearSeparableData data and plot
-        LinearSeparableData data= new LinearSeparableData(3000, 2);
-        data.range_negative= -400;
-        data.range_positive= 400;
-        data.c_range_negative= -100;
-        data.c_range_positive= 100;
-        panel = new Panel(data.normalize_against_axis(data.getRandomData(), 400, 300 ), 0, 0);
+        panel= getPanel();
         panel.setBackground(Color.WHITE);
         panel.setBounds(54, 35, 800, 600);
         frame.getContentPane().add(panel);
@@ -59,35 +56,49 @@ public class DrawPanel {
     }
 
     private class Panel extends JPanel {
-        private ArrayList<LinearSeparableData.point> points;
-        private double slope, intercept;
+        private ArrayList<DataPoint> points;
+        private LinePoint line_point;
 
-        Panel(ArrayList<LinearSeparableData.point> points, double slope, double intercept) {
+        Panel(ArrayList<DataPoint> points, LinePoint line_points) {
             super();
             this.points = points;
-            this.slope = slope;
-            this.intercept = intercept;
+            this.line_point = line_points;
         }
 
         public void paint(Graphics g) {
             super.paint(g);
+            Graphics2D g2= (Graphics2D) g;
             System.out.println("ss");
             //Axis thickness
-            ((Graphics2D) g).setStroke(new BasicStroke(3));
+            g2.setStroke(new BasicStroke(3));
             //y axis
             g.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
             //x axis
             g.drawLine(0, getHeight() / 2, getWidth(), this.getHeight() / 2);
             System.out.println(this.getWidth());
-            for (LinearSeparableData.point point:points)
-            {
-                if (point.getItem_class() == 1)
-                  ((Graphics2D) g).setColor(new Color(150,100,255));
-                else
-                    ((Graphics2D) g).setColor(new Color(150,200,0));
-                g.drawOval(point.get_int_X(),point.get_int_Y(),2,2);
+            for (DataPoint point : points) {
+                point.draw(g2);
             }
-//            g.drawLine(100,200,100,200);
+            line_point.draw(g2);
+
+            System.out.println(line_point);
         }
+    }
+
+    private Panel getPanel()
+    {
+        //Get the LinearSeparableData data and plot
+        LinearSeparableData data = new LinearSeparableData(3000, 2);
+        data.range_negative = -400;
+        data.range_positive = 400;
+        data.c_range_negative = -100;
+        data.c_range_positive = 100;
+        ArrayList<DataPoint> points = data.getRandomData();
+        Perceptron perceptron= new Perceptron(points);
+        perceptron.init();
+        perceptron.fit();
+        panel = new Panel(data.normalize_against_axis(points, 400, 300),
+                new LinePoint(perceptron.weights, 400,-400, 400,300));
+        return  panel;
     }
 }

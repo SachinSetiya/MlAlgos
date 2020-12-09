@@ -25,9 +25,9 @@ public class LinearSeparableData {
         this.spread_from_line = 250;
     }
 
-    public ArrayList<point> getRandomData() {
+    public ArrayList<DataPoint> getRandomData() {
         cal_num_line();
-        ArrayList<point> data = new ArrayList<point>(this.points);
+        ArrayList<DataPoint> data = new ArrayList<DataPoint>(this.points);
         //TODO for now 2D only
 
         //y = mx + c
@@ -42,42 +42,33 @@ public class LinearSeparableData {
         //c get a range from c_range_negative to c_range_positive
         double c = f * (c_range_positive - c_range_negative) + c_range_negative;
         System.out.println("slope= " + slope + " Angle= " + theta + "intercept = " + c);
-        double range, y, point_range= spread_from_line - closeness_to_line;
+        double range, y, point_range = spread_from_line - closeness_to_line;
         for (int i = 0; i < points; i++) {
-            range = Math.random() * point_range*2;
+            range = Math.random() * point_range * 2;
             if (range > point_range) {
                 range = range / 2 + closeness_to_line;
-            }
-            else {
+            } else {
                 range = -range / 2 - closeness_to_line;
             }
-            System.out.println(range);
             //y= mx+c (+ range for randomness)
             y = slope * this.num_line.get(i) + c;
-            data.add(new point(num_line.get(i)+range, y, range>0?1:0));
+            data.add(new DataPoint(num_line.get(i) + range, y, range > 0 ? 1 : -1));
         }
 
         return data;
     }
 
-    public ArrayList<point> normalize_against_axis(ArrayList<point> input, double x, double y) {
-        for (point ptr : input) {
-            ptr.x += x;
-            // Dont create this /\ pattern
-            if (ptr.y > y)
-                ptr.y = y - ptr.y;
-            else
-                ptr.y = mode(ptr.y - y);
+    public ArrayList<DataPoint> normalize_against_axis(ArrayList<DataPoint> input, double x, double y) {
+        for (DataPoint ptr : input) {
+            ptr.normalize_against_axis_point(x,y);
         }
         //    System.out.println(input);
         return input;
     }
 
-    public double mode(double num) {
-        if (num > 0)
-            return num;
-        return -num;
-    }
+
+
+
 
     private ArrayList<Double> cal_num_line() {
         double diff = (range_positive - range_negative) / points, current = range_negative;
@@ -97,32 +88,11 @@ public class LinearSeparableData {
         System.out.println(data.getRandomData());
     }
 
-    public class point {
-        double x, y;
 
-        public int getItem_class() {
-            return item_class;
-        }
-
-        int item_class;
-        public int get_int_X() {
-            return (int) x;
-        }
-
-        public int get_int_Y() {
-            return (int) y;
-        }
-
-        point(double x, double y, int item_class) {
-            this.x = x;
-            this.y = y;
-            this.item_class= item_class;
-        }
-
-
-        @Override
-        public String toString() {
-            return "X: " + x + " Y: " + y + "\n";
-        }
+    public ArrayList<DataPoint> get_line(double slope, double intercept) {
+        ArrayList<DataPoint> pt = new ArrayList<DataPoint>();
+        pt.add(new DataPoint(range_negative + 10, slope * (range_negative + 10) + intercept, 0));
+        pt.add(new DataPoint(range_positive - 10, slope * (range_positive - 10) + intercept, 0));
+        return pt;
     }
 }
