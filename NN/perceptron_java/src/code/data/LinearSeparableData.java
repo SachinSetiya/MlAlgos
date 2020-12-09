@@ -21,8 +21,8 @@ public class LinearSeparableData {
         this.range_positive = 10.0;
         this.c_range_negative = -4;
         this.c_range_positive = 4;
-        this.closeness_to_line = 1.5;
-        this.spread_from_line = 10;
+        this.closeness_to_line = 5;
+        this.spread_from_line = 250;
     }
 
     public ArrayList<point> getRandomData() {
@@ -42,13 +42,19 @@ public class LinearSeparableData {
         //c get a range from c_range_negative to c_range_positive
         double c = f * (c_range_positive - c_range_negative) + c_range_negative;
         System.out.println("slope= " + slope + " Angle= " + theta + "intercept = " + c);
-        double range, y;
+        double range, y, point_range= spread_from_line - closeness_to_line;
         for (int i = 0; i < points; i++) {
-            range = Math.random() * (spread_from_line - closeness_to_line) + spread_from_line;
+            range = Math.random() * point_range*2;
+            if (range > point_range) {
+                range = range / 2 + closeness_to_line;
+            }
+            else {
+                range = -range / 2 - closeness_to_line;
+            }
+            System.out.println(range);
             //y= mx+c (+ range for randomness)
             y = slope * this.num_line.get(i) + c;
-            data.add(new point(num_line.get(i), y));
-//            data.add(new point(num_line.get(i), 100));
+            data.add(new point(num_line.get(i)+range, y, range>0?1:0));
         }
 
         return data;
@@ -57,7 +63,7 @@ public class LinearSeparableData {
     public ArrayList<point> normalize_against_axis(ArrayList<point> input, double x, double y) {
         for (point ptr : input) {
             ptr.x += x;
-            // Dont create this /\ pattern 
+            // Dont create this /\ pattern
             if (ptr.y > y)
                 ptr.y = y - ptr.y;
             else
@@ -94,6 +100,11 @@ public class LinearSeparableData {
     public class point {
         double x, y;
 
+        public int getItem_class() {
+            return item_class;
+        }
+
+        int item_class;
         public int get_int_X() {
             return (int) x;
         }
@@ -102,9 +113,10 @@ public class LinearSeparableData {
             return (int) y;
         }
 
-        point(double x, double y) {
+        point(double x, double y, int item_class) {
             this.x = x;
             this.y = y;
+            this.item_class= item_class;
         }
 
 

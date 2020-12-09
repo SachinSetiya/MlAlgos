@@ -46,7 +46,7 @@ public class DrawPanel {
         frame.getContentPane().setLayout(null);
 
         //Get the LinearSeparableData data and plot
-        LinearSeparableData data= new LinearSeparableData(1000, 2);
+        LinearSeparableData data= new LinearSeparableData(3000, 2);
         data.range_negative= -400;
         data.range_positive= 400;
         data.c_range_negative= -100;
@@ -81,6 +81,10 @@ public class DrawPanel {
             System.out.println(this.getWidth());
             for (LinearSeparableData.point point:points)
             {
+                if (point.getItem_class() == 1)
+                  ((Graphics2D) g).setColor(new Color(150,100,255));
+                else
+                    ((Graphics2D) g).setColor(new Color(150,200,0));
                 g.drawOval(point.get_int_X(),point.get_int_Y(),2,2);
             }
 //            g.drawLine(100,200,100,200);
