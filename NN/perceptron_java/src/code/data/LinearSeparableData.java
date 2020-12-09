@@ -21,14 +21,13 @@ public class LinearSeparableData {
         this.range_positive = 10.0;
         this.c_range_negative = -4;
         this.c_range_positive = 4;
-        this.closeness_to_line = 5;
+        this.closeness_to_line = 50;
         this.spread_from_line = 250;
     }
 
     public ArrayList<DataPoint> getRandomData() {
         cal_num_line();
         ArrayList<DataPoint> data = new ArrayList<DataPoint>(this.points);
-        //TODO for now 2D only
 
         //y = mx + c
 
@@ -36,7 +35,7 @@ public class LinearSeparableData {
          * Select any angle from 0 to 180, and then calculate slope
          */
         double f = Math.random() / Math.nextDown(1.0);
-        double theta = 90 * f;
+        double theta = 180*f;
         double slope = Math.tan(Math.toRadians(theta));
 
         //c get a range from c_range_negative to c_range_positive
@@ -85,7 +84,7 @@ public class LinearSeparableData {
 
     public static void main(String[] args) {
         LinearSeparableData data = new LinearSeparableData(10, 0);
-        System.out.println(data.getRandomData());
+     //   System.out.println(data.getRandomData());
     }
 
 

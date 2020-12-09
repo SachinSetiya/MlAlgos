@@ -68,20 +68,20 @@ public class DrawPanel {
         public void paint(Graphics g) {
             super.paint(g);
             Graphics2D g2= (Graphics2D) g;
-            System.out.println("ss");
+         //   System.out.println("ss");
             //Axis thickness
             g2.setStroke(new BasicStroke(3));
             //y axis
             g.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
             //x axis
             g.drawLine(0, getHeight() / 2, getWidth(), this.getHeight() / 2);
-            System.out.println(this.getWidth());
+       //     System.out.println(this.getWidth());
             for (DataPoint point : points) {
                 point.draw(g2);
             }
             line_point.draw(g2);
 
-            System.out.println(line_point);
+        //    System.out.println(line_point);
         }
     }
 
@@ -91,12 +91,12 @@ public class DrawPanel {
         LinearSeparableData data = new LinearSeparableData(3000, 2);
         data.range_negative = -400;
         data.range_positive = 400;
-        data.c_range_negative = -100;
-        data.c_range_positive = 100;
+        data.c_range_negative = -200;
+        data.c_range_positive = 1;
         ArrayList<DataPoint> points = data.getRandomData();
         Perceptron perceptron= new Perceptron(points);
         perceptron.init();
-        perceptron.fit();
+        perceptron.fit(null);
         panel = new Panel(data.normalize_against_axis(points, 400, 300),
                 new LinePoint(perceptron.weights, 400,-400, 400,300));
         return  panel;

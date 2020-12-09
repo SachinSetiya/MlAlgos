@@ -3,6 +3,7 @@ package code.compute;
 import code.data.DataPoint;
 import code.data.LinearSeparableData;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class Perceptron {
@@ -25,16 +26,20 @@ public class Perceptron {
        weights=  w1, w2, w3,  W Transpose= [w1 w2 w3]
 
      */
-    public void fit() {
-        int i = 10;
+    public void fit(JPanel panel) {
+        int i = 100, j=1;
         while (i > 0) {
             for (DataPoint point : data) {
                 if (dot_product(weights, point.get_array()) * point.getItem_class() < 0) {
-                    oper(weights, scaler_product(point.get_array(),.1), (point.getItem_class() > 0) ? true : false);
+                    oper(weights, scaler_product(point.get_array(), .01), (point.getItem_class() > 0) ? true : false);
                 }
+                if (j % 100 == 0)
+                    System.out.println(weights[0] + "   " + weights[1] + "   " + weights[2]);
+                j++;
             }
             i--;
         }
+
     }
 
     public static double dot_product(double[] arr1, double[] arr2) {
@@ -50,14 +55,14 @@ public class Perceptron {
         assert (arr1.length == arr2.length);
         for (int i = 0; i < arr1.length; i++) {
             if (sum)
-                arr1[i] += arr1[i] * arr2[i];
+                arr1[i] = arr1[i] + arr2[i];
             else
-                arr1[i] += arr1[i] * arr2[i];
+                arr1[i] = arr1[i] - arr2[i];
         }
     }
     public static double[] scaler_product(double[] arr1, double scale) {
         for (int i = 0; i < arr1.length; i++) {
-            arr1[i] += arr1[i] * scale;
+            arr1[i] = arr1[i] * scale;
         }
         return  arr1;
     }
